@@ -29,23 +29,22 @@ def AddInfo(data)
 		data.each {|record| csv << record}
 	end
 end
-def FindExistInCols(data, target,fCase = 0)
+def FindExistRow(data, target)
 	ind = -1
-	temp = -1
 	for i in data do
-		for j in i do
-			temp = j.index(target)
-			if !temp.nil? then
-				if fCase == 0 then
-					ind = data.index(i)
-				end
-				if fCase == 1 then
-					ind = i.index(j)
-				end
-				break
-			end
+		if i[0]==target then
+			ind = data.index(i)
 		end
 	end	
+	return ind
+end
+def FindExistEl(data, target,row)
+	ind = -1
+	for i in data[row] do
+		if i == target && data[row].index(i) != 0 then
+			ind = data[row].index(target)
+		end
+	end
 	return ind
 end
 def ChooseAccount(data, server)
@@ -71,7 +70,7 @@ while choiceS == "Add..." || choiceA == "Add..." do
 		while temp == "Add..." do
 			print("Enter new server:")
 			temp = gets.chomp
-			if temp == choiceS || FindExistInCols(data, temp) != -1 then
+			if temp == choiceS || FindExistRow(data, temp) != -1 then
 				puts("Error, please try again!")
 				temp = "Add..."
 				next
@@ -80,19 +79,22 @@ while choiceS == "Add..." || choiceA == "Add..." do
 			AddInfo(data)
 		end
 	end
-	choiceA = ChooseAccount(data,FindExistInCols(data,choiceS))
+	choiceA = ChooseAccount(data,FindExistRow(data,choiceS))
 	if choiceA == "Add..." then
 		temp = choiceA
 		while temp == "Add..." do
 			print("Enter new user:")
 			temp = gets.chomp
-			if temp == choiceA || FindExistInCols(data, temp) != -1 then
+			if temp == choiceA || FindExistEl(data,temp,FindExistRow(data,choiceS)) != -1 then
 				puts("Error, please try again!")
 				temp = "Add..."
 				next
 			end
-			data[FindExistInCols(data, choiceS)].append(temp)
+			data[FindExistRow(data, choiceS)].append(temp)
 			AddInfo(data)
+			choiceA = temp
 		end
+		choiceA = "Add..."
 	end
+	#system("ssh " + choiceA + "@" + choiceS)
 end	
