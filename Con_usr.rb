@@ -1,7 +1,9 @@
 #!/usr/bin/ruby
 
+require 'Logo.rb'
 require 'cli/ui'
 require 'csv'
+include Logo
 
 def ReadUsersFile()
 	data = []
@@ -62,6 +64,7 @@ end
 
 choiceS = "Add..."
 choiceA = "Add..."
+Logo.LogoFull("PoisonousJAM","ConUsr")
 data = ReadUsersFile()
 while choiceS == "Add..." || choiceA == "Add..." do
 	choiceS = GetServer(data)
