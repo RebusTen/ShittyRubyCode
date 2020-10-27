@@ -24,7 +24,7 @@ def GetServer(serveruser, removing = false)
 		end
 		if !removing then
 			handler.option("Add...") { |selection| selection }
-#			handler.option("Remove...") { |selection| selection }
+			handler.option("Remove...") { |selection| selection }
 		end
 		handler.option("Exit...") { |selection| selection }
 	end
@@ -63,7 +63,7 @@ def ChooseAccount(data, server, removing = false)
 		end
 		if !removing then
 			handler.option("Add...") { |selection| selection }
-#			handler.option("Remove...") { |selection| selection }
+			handler.option("Remove...") { |selection| selection }
 		end
 		handler.option("Back...") { |selection| selection }
 	end
@@ -83,10 +83,15 @@ end
 system("touch userinf.csv")
 choiceS = "Add..."
 choiceA = "Add..."
+servChosen = false
+removingAcc = false
 Logo.LogoFull("PoisonousJAM","ConUsr")
 data = ReadUsersFile()
-while choiceS == "Add..." || choiceA == "Add..." || choiceA == "Back..." do
-	choiceS = GetServer(data)
+while choiceS == "Add..." || choiceA == "Add..." || choiceA == "Back..." || choiceA == "Remove..." do
+	if !servChosen then
+		choiceS = GetServer(data)
+	end
+	servChosen = false
 	if choiceS == "Add..." then
 		temp = choiceS
 		while temp == "Add..." do
@@ -100,20 +105,38 @@ while choiceS == "Add..." || choiceA == "Add..." || choiceA == "Back..." do
 			if YNQuestion("Do you want to add " + temp + " to list of servers ?") then
 				data.append([temp])
 				AddInfo(data)
+				choiceS = temp
+				puts("1 " + choiceS)
 			end
 		end
 	end
 	if choiceS == "Exit..." then
 		break
 	end
-			
-	choiceA = ChooseAccount(data,FindExistRow(data,choiceS))
+	if choiceS == "Remove..." then
+		temp = GetServer(data,true)
+		if temp == "Back..." then
+			choiceS = "Add..."
+			next
+		end
+		if YNQuestion("Are you sure you want to remove " + temp + " server from the list") then
+			data.delete_at(FindExistRow(data, temp))
+			AddInfo(data)
+			choiceS = "Add..."
+			next
+		end
+	end
+	
+	if !removingAcc then
+		choiceA = ChooseAccount(data, FindExistRow(data, choiceS))
+	end
+	puts("2 " + choiceS)
 	if choiceA == "Add..." then
 		temp = choiceA
 		while temp == "Add..." do
 			print("Enter new user:")
 			temp = gets.chomp
-			if temp == choiceA ||temp == "Back..."|| FindExistEl(data,temp,FindExistRow(data,choiceS)) != -1 then
+			if temp == choiceA || temp == "Back..." || FindExistEl(data,temp,FindExistRow(data,choiceS)) != -1 then
 				puts("Error, please try again!")
 				temp = "Add..."
 				next
@@ -127,6 +150,23 @@ while choiceS == "Add..." || choiceA == "Add..." || choiceA == "Back..." do
 		choiceA = "Add..."
 		next
 	end
+	if choiceA == "Remove..." then
+		removingAcc = true
+		temp = ChooseAccount(data, FindExistRow(data,choiceS), true)
+		if temp == "Back..." then
+			removingAcc = false
+			servChosen = true
+			choiceA = "Add..."
+			next
+		end
+		if YNQuestion("Are you sure you want to remove " + temp + " from " + choiceS + " list ?") then
+			data[FindExistRow(data,choiceS)].delete_at(FindExistEl(data,temp,FindExistRow(data,choiceS)))
+			AddInfo(data)
+			servChosen = true
+			next
+		end
+	end
+
 	if choiceA == "Back..." then
 		next
 	end
