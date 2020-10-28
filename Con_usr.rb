@@ -115,7 +115,7 @@ while choiceS == "Add..." || choiceA == "Add..." || choiceA == "Back..." || choi
 	end
 	if choiceS == "Remove..." then
 		temp = GetServer(data,true)
-		if temp == "Back..." then
+		if temp == "Exit..." then
 			choiceS = "Add..."
 			next
 		end
