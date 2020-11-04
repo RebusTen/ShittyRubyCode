@@ -106,7 +106,6 @@ while choiceS == "Add..." || choiceA == "Add..." || choiceA == "Back..." || choi
 				data.append([temp])
 				AddInfo(data)
 				choiceS = temp
-				puts("1 " + choiceS)
 			end
 		end
 	end
@@ -130,7 +129,6 @@ while choiceS == "Add..." || choiceA == "Add..." || choiceA == "Back..." || choi
 	if !removingAcc then
 		choiceA = ChooseAccount(data, FindExistRow(data, choiceS))
 	end
-	puts("2 " + choiceS)
 	if choiceA == "Add..." then
 		temp = choiceA
 		while temp == "Add..." do
